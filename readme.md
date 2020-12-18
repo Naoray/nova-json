@@ -1,5 +1,5 @@
 # nova-json
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)\
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Total Downloads](https://img.shields.io/packagist/dt/naoray/nova-json.svg?style=flat-square)](https://packagist.org/packages/naoray/nova-json)
 
 ## Install
