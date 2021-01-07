@@ -34,7 +34,7 @@ class JSONTest extends TestCase
             Text::make('Street'),
         ]);
 
-        $json->data[0]->resolve($userWithData, 'street');
+        $json->data[0]->resolve($userWithData, 'address->street');
         $this->assertEquals('test street', $json->data[0]->value);
     }
 
@@ -46,7 +46,7 @@ class JSONTest extends TestCase
             Text::make('Street'),
         ]);
 
-        $json->data[0]->fillInto(new NovaRequest(['street' => 'test street']), $user, 'street');
+        $json->data[0]->fillInto(new NovaRequest(['address->street' => 'test street']), $user, 'address->street');
         $this->assertEquals('test street', $user->address['street']);
     }
 
@@ -59,7 +59,7 @@ class JSONTest extends TestCase
         ]);
 
         $this->expectException(AttributeCast::class);
-        $json->data[0]->fillInto(new NovaRequest(['street' => 'test street']), $user, 'street');
+        $json->data[0]->fillInto(new NovaRequest(['address->street' => 'test street']), $user, 'address->street');
     }
 
     /** @test */
