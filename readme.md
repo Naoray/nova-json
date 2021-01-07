@@ -1,6 +1,23 @@
 # nova-json
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)\
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Total Downloads](https://img.shields.io/packagist/dt/naoray/nova-json.svg?style=flat-square)](https://packagist.org/packages/naoray/nova-json)
+
+The `JSON` field wrapper allows you to specify multiple fields which will be resolved into a single model attribute. This allows you to validate every information you store inside a json column seperately.
+
+```php
+JSON::make('Author', [
+    Text::make('Name')->rules(['string', 'required', 'min:3']),
+    Text::make('Email')->rules(['email', 'required']),
+])
+```
+The above will be resolved into a single `author` attribute on the model.
+
+```php
+// prequesite: the 'author' attribute needs to casted into a json castable type
+// e.g. object, array, ...
+['author' => ['name' => '', 'email' => '']]
+```
+
 
 ## Install
 `composer require naoray/nova-json`
