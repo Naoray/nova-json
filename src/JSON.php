@@ -2,11 +2,11 @@
 
 namespace Naoray\NovaJson;
 
-use Laravel\Nova\Makeable;
-use Illuminate\Support\Str;
-use Laravel\Nova\Fields\Field;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\MergeValue;
+use Illuminate\Support\Str;
+use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Makeable;
 use Naoray\NovaJson\Exceptions\AttributeCast;
 
 class JSON extends MergeValue
@@ -55,7 +55,7 @@ class JSON extends MergeValue
             if ($request->exists($requestAttribute)) {
                 $value = $request[$requestAttribute];
 
-                if (!$model->hasCast($this->attribute)) {
+                if (! $model->hasCast($this->attribute)) {
                     throw AttributeCast::notFoundFor($this->attribute);
                 }
 
