@@ -2,11 +2,11 @@
 
 namespace Naoray\NovaJson\Tests;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Naoray\NovaJson\JSON;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Naoray\NovaJson\Exceptions\AttributeCast;
-use Naoray\NovaJson\JSON;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class JSONTest extends TestCase
 {
@@ -60,6 +60,26 @@ class JSONTest extends TestCase
 
         $this->expectException(AttributeCast::class);
         $json->data[0]->fillInto(new NovaRequest(['street' => 'test street']), $user, 'street');
+    }
+
+    /** @test */
+    public function it_allows_nested_json_fields()
+    {
+        $user = new User(['address' => ['street' => '']]);
+        $json = JSON::make('Address', 'address', [
+            Text::make('Street'),
+
+            JSON::make('Location', [
+                Text::make('Latitude'),
+                Text::make('Longitude'),
+            ]),
+        ]);
+
+        $request = new NovaRequest(['address->location->latitude' => 'some-val', 'address->location->longitude' => 'other-val']);
+        $json->data[1]->fillInto($request, $user, 'address->location->latitude');
+        $json->data[2]->fillInto($request, $user, 'address->location->longitude');
+
+        $this->assertEquals(['street' => '', 'location' => ['latitude' => 'some-val', 'longitude' => 'other-val']], $user->address);
     }
 }
 

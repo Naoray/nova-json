@@ -2,9 +2,11 @@
 
 namespace Naoray\NovaJson;
 
-use Illuminate\Http\Resources\MergeValue;
-use Illuminate\Support\Str;
 use Laravel\Nova\Makeable;
+use Illuminate\Support\Str;
+use Laravel\Nova\Fields\Field;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Resources\MergeValue;
 use Naoray\NovaJson\Exceptions\AttributeCast;
 
 class JSON extends MergeValue
@@ -29,26 +31,45 @@ class JSON extends MergeValue
     {
         $this->name = $name;
         $this->attribute = is_string($attribute) ? $attribute : str_replace(' ', '_', Str::lower($name));
-        $this->data = $this->applyNovaCallbacks(is_array($attribute) ? $attribute : $fields);
+
+        parent::__construct($this->prepareFields(is_array($attribute) || is_callable($attribute) ? $attribute : $fields));
     }
 
-    protected function applyNovaCallbacks(array $fields): array
+    protected function prepareFields(array $fields): array
     {
-        return collect($fields)
+        return collect(is_callable($fields) ? $fields() : $fields)
             ->map(function ($field) {
-                return $field->resolveUsing(fn ($value, $resource, $attribute) => data_get($resource, "{$this->attribute}.{$attribute}"))
-                    ->fillUsing(function ($request, $model, $attribute, $requestAttribute) use ($field) {
-                        if ($request->exists($requestAttribute)) {
-                            $value = $request[$requestAttribute];
-
-                            if (! $model->hasCast($this->attribute)) {
-                                throw AttributeCast::notFound();
-                            }
-
-                            $model->setAttribute("{$this->attribute}->{$attribute}", $value ?? null);
-                        }
-                    });
+                return $field instanceof self
+                    ? $this->prepareFields($field->data)
+                    : [$this->prepareField($field)];
             })
+            ->flatten()
             ->all();
+    }
+
+    protected function prepareField(Field $field)
+    {
+        $field->attribute = "{$this->attribute}->{$field->attribute}";
+
+        return $field->fillUsing(function ($request, Model $model, $attribute, $requestAttribute) use ($field) {
+            if ($request->exists($requestAttribute)) {
+                $value = $request[$requestAttribute];
+
+                if (!$model->hasCast($this->attribute)) {
+                    throw AttributeCast::notFoundFor($this->attribute);
+                }
+
+                $data = $this->getOldValue($model);
+                $dottedAttrKey = str_replace(["{$this->attribute}->", '->'], ['', '.'], $attribute);
+                $data = data_set($data, $dottedAttrKey, $value ?? null);
+
+                $model->{$this->attribute} = $data;
+            }
+        });
+    }
+
+    protected function getOldValue($model)
+    {
+        return (array)$model->{$this->attribute};
     }
 }

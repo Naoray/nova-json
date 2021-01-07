@@ -6,8 +6,8 @@ use Exception;
 
 class AttributeCast extends Exception
 {
-    public static function notFound()
+    public static function notFoundFor($attribute)
     {
-        return new static('All fields using the JSON field need to be casted to a json castable type.');
+        return new static("No cast found for [{$attribute}] field.");
     }
 }
