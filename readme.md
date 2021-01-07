@@ -19,10 +19,14 @@ The above will be resolved into a single `author` attribute on the model.
 ```
 
 
-## Install
+## Install & setup
 `composer require naoray/nova-json`
 
+Add the column's name, you want to use in the `JSON` field, to your `$casts` array on the resource's model!
+
 ## Usage
+You can destructure one JSON column into multiple Nova fields and apply unique rules to each of the key-value pairs.
+
 ```php
 use Naoray\NovaJson\JSON;
 
@@ -40,7 +44,22 @@ public function fields()
 }
 ```
 
-Make sure you have added the `some_json_column_name` to your `$casts` array on the resource's model!
+### Labels & Attributes
+By default the first argument you provide the `JSON` field will be considered its `name`. If you don't provide a second string argument the `attribute` of the field will be guessed e.g. `'Some Json Column Name' => 'some_json_column_name'`. If you want your field `name` to be different from your `attribute` you can provide the field with a second argument and provide the fields as the third argument: `JSON::make('Some Name', 'column_name', [])`
+
+### Nested Structures
+The `JSON` field can also be nested by itself to display nested JSON structures:
+
+```php
+JSON::make('Meta', [
+    Text::make('Street'),
+
+    JSON::make('Location', [
+        Text::make('Latitude'),
+        Text::make('Longitude'),
+    ]),
+]);
+```
 
 ## Testing
 Run the tests with:

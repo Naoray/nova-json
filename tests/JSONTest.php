@@ -2,11 +2,11 @@
 
 namespace Naoray\NovaJson\Tests;
 
-use Naoray\NovaJson\JSON;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Naoray\NovaJson\Exceptions\AttributeCast;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Naoray\NovaJson\JSON;
 
 class JSONTest extends TestCase
 {
