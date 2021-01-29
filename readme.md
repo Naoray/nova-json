@@ -43,6 +43,31 @@ public function fields()
     ]
 }
 ```
+## Use inside Panels
+In order to use JSON column inside Nova Panel you need to either not wrap it in array brackets (if it's the only field you're using) or use splat operator (if there are other fields in the Panel)
+
+#### Examples
+1. JSON is the only field inside Panel
+```php
+new Panel('Brand Settings', 
+    JSON::make('brand_settings', [
+        Image::make('Logo')->disk('public'),
+        Color::make('Primary Color')->swatches(),
+        Color::make('Secondary Color')->swatches(),
+    ]),
+),
+```
+2. if you need other fields inside the Panel you can use splat operator like this:
+```php
+new Panel('Brand Settings', [
+    Text::make('Some Field'),
+    ...JSON::make('brand_settings', [
+        Image::make('Logo')->disk('public'),
+        Color::make('Primary Color')->swatches(),
+        Color::make('Secondary Color')->swatches(),
+    ]),
+]),
+```
 
 ### Labels & Attributes
 By default the first argument you provide the `JSON` field will be considered its `name`. If you don't provide a second string argument the `attribute` of the field will be guessed e.g. `'Some Json Column Name' => 'some_json_column_name'`. If you want your field `name` to be different from your `attribute` you can provide the field with a second argument and provide the fields as the third argument: `JSON::make('Some Name', 'column_name', [])`
