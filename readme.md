@@ -44,7 +44,7 @@ public function fields()
 }
 ```
 ## Use inside Panels
-In order to use JSON column inside Nova Panel you need to either not wrap it in array brackets (if it's the only field you're using) or use splat operator (if there are other fields in the Panel)
+In order to use JSON column inside Nova Panel you need to get 'data' property of the top level JSON field.
 
 #### Examples
 1. JSON is the only field inside Panel
@@ -54,7 +54,7 @@ new Panel('Brand Settings',
         Image::make('Logo')->disk('public'),
         Color::make('Primary Color')->swatches(),
         Color::make('Secondary Color')->swatches(),
-    ]),
+    ])->data,
 ),
 ```
 2. if you need other fields inside the Panel you can use splat operator like this:
@@ -65,7 +65,7 @@ new Panel('Brand Settings', [
         Image::make('Logo')->disk('public'),
         Color::make('Primary Color')->swatches(),
         Color::make('Secondary Color')->swatches(),
-    ]),
+    ])->data,
 ]),
 ```
 
