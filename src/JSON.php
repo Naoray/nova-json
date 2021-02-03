@@ -2,13 +2,13 @@
 
 namespace Naoray\NovaJson;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Resources\MergeValue;
+use Laravel\Nova\Makeable;
 use Illuminate\Support\Str;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\Hidden;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Resources\MergeValue;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Makeable;
 use Naoray\NovaJson\Exceptions\AttributeCast;
 
 class JSON extends MergeValue
@@ -86,14 +86,7 @@ class JSON extends MergeValue
         return $this;
     }
 
-    /**
-     * Indicate that the field should be nullable.
-     *
-     * @param  bool  $nullable
-     * @param  array|Closure  $values
-     * @return $this
-     */
-    public function nullable($nullable = true, $values = null)
+    public function nullable(bool $nullable = true, $values = null)
     {
         $this->nullable = $nullable;
 
@@ -104,12 +97,6 @@ class JSON extends MergeValue
         return $this;
     }
 
-    /**
-     * Specify nullable values.
-     *
-     * @param  array|Closure  $values
-     * @return $this
-     */
     public function nullValues($values)
     {
         $this->nullValues = $values;
@@ -117,13 +104,7 @@ class JSON extends MergeValue
         return $this;
     }
 
-    /**
-     * Check value for null value.
-     *
-     * @param  mixed $value
-     * @return bool
-     */
-    protected function isNullValue($value)
+    protected function isNullValue($value): bool
     {
         return is_callable($this->nullValues)
             ? ($this->nullValues)($value)
@@ -170,7 +151,7 @@ class JSON extends MergeValue
                 return;
             }
 
-            if (! $model->hasCast($this->attribute)) {
+            if (!$model->hasCast($this->attribute)) {
                 throw AttributeCast::notFoundFor($this->attribute);
             }
 
