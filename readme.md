@@ -1,7 +1,7 @@
 # nova-json
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Total Downloads](https://img.shields.io/packagist/dt/naoray/nova-json.svg?style=flat-square)](https://packagist.org/packages/naoray/nova-json)
-[![Tests](https://github.com/naoray/nova-json/workflows/run-tests/badge.svg?branch=main)]
+![Tests](https://github.com/naoray/nova-json/workflows/run-tests/badge.svg?branch=main)
 
 The `JSON` field wrapper allows you to specify multiple fields which will be resolved into a single model attribute. This allows you to validate every information you store inside a json column seperately.
 
