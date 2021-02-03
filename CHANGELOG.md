@@ -1,4 +1,10 @@
 # Changelog
+
+## [v1.2.1](https://github.com/naoray/nova-json/tree/v1.2.1) (2021-02-03)
+
+**Fixed**
+- bug where nested JSON structures would return only partly resolved with `->` instead of having an array structure.
+
 ## [v1.2.0](https://github.com/naoray/nova-json/tree/v1.2.0) (2021-02-03)
 
 **Added**
