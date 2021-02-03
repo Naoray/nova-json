@@ -2,11 +2,11 @@
 
 namespace Naoray\NovaJson\Tests;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Naoray\NovaJson\JSON;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Naoray\NovaJson\Exceptions\AttributeCast;
-use Naoray\NovaJson\JSON;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class JSONTest extends TestCase
 {
@@ -80,6 +80,72 @@ class JSONTest extends TestCase
         $json->data[2]->fillInto($request, $user, 'address->location->longitude');
 
         $this->assertEquals(['street' => '', 'location' => ['latitude' => 'some-val', 'longitude' => 'other-val']], $user->address);
+    }
+
+    /** @test */
+    public function it_respects_fillable_callbacks_to_retrieve_values()
+    {
+        $user = new User(['address' => ['street' => '']]);
+        $json = JSON::make('Address', 'address', [
+            Text::make('Street')->fillUsing(fn ($request, $model, $attribute, $requestAttribute) => $request[$requestAttribute] . ' Foo'),
+        ]);
+
+        $request = new NovaRequest(['address->street' => 'some-val']);
+        $json->data[0]->fillInto($request, $user, 'address->street');
+        $this->assertEquals('some-val Foo', $user->address['street']);
+    }
+
+    /** @test */
+    public function it_can_fill_all_json_values_at_once()
+    {
+        $user = new User(['address' => ['street' => '', 'city' => '']]);
+        $json = JSON::make('Address', 'address', [
+            Text::make('Street'),
+            Text::make('City'),
+        ])->fillAtOnce();
+
+        $request = new NovaRequest(['address->street' => 'some-val', 'address->city' => 'other-val', 'nonjson' => 'foo']);
+        $json->data[0]->fillInto($request, $user, 'address->street');
+        $json->data[1]->fillInto($request, $user, 'address->city');
+        $this->assertEquals('', $user->address['street']);
+        $this->assertEquals('', $user->address['city']);
+
+        collect($json->data)->last()->fillInto($request, $user, 'address');
+        $this->assertEquals(['street' => 'some-val', 'city' => 'other-val'], $user->address);
+    }
+
+    /** @test */
+    public function it_respects_the_fill_all_values_at_once_callback()
+    {
+        $user = new User(['address' => ['street' => '', 'city' => '']]);
+        $json = JSON::make('Address', 'address', [
+            Text::make('Street'),
+            Text::make('City'),
+        ])->fillAtOnce(function ($request, $requestValues, $model, $attribute, $requestAttribute) {
+            return ['nested' => $requestValues];
+        });
+
+        $request = new NovaRequest(['address->street' => 'some-val', 'address->city' => 'other-val', 'nonjson' => 'foo']);
+
+        collect($json->data)->last()->fillInto($request, $user, 'address');
+        $this->assertEquals(['nested' => ['street' => 'some-val', 'city' => 'other-val']], $user->address);
+    }
+
+    /** @test */
+    public function it_respects_the_fill_all_values_at_once_callback_and_individual_field_callbacks()
+    {
+        $user = new User(['address' => ['street' => '', 'city' => '']]);
+        $json = JSON::make('Address', 'address', [
+            Text::make('Street')->fillUsing(fn ($request, $model, $attribute, $requestAttribute) => $request[$requestAttribute] . ' Foo'),
+            Text::make('City'),
+        ])->fillAtOnce(function ($request, $requestValues, $model, $attribute, $requestAttribute) {
+            return ['nested' => $requestValues];
+        });
+
+        $request = new NovaRequest(['address->street' => 'some-val', 'address->city' => 'other-val', 'nonjson' => 'foo']);
+
+        collect($json->data)->last()->fillInto($request, $user, 'address');
+        $this->assertEquals(['nested' => ['street' => 'some-val Foo', 'city' => 'other-val']], $user->address);
     }
 }
 

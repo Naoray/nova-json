@@ -43,6 +43,48 @@ public function fields()
     ]
 }
 ```
+
+## FillUsing callbacks
+The `->fillUsing()` callbacks are normally used to fill the models attribute directly. With this package, it's not necessary to fill the model's attribute, but instead you should return the value you want to save on the model itself.
+
+```php
+JSON::make('Address', 'address', [
+    Text::make('Street')->fillUsing(fn ($request, $model, $attribute, $requestAttribute) => $request[$requestAttribute] . ' Foo'),
+]);
+```
+
+The above example is rather silly than useful, but it demonstrates the concept. The _ Foo_ value will be apended to every `address->street` value within nova.
+
+## Fill at once
+When using [data transfer objects](https://github.com/spatie/data-transfer-object) (which works well with [castable dto's](https://github.com/jessarcher/laravel-castable-data-transfer-object)) you don't want each field to be filled seperately, because than the dto's validation is useless. With the `fillAtOnce()` method a `Hidden` field will be added and the filling of single fields will be avoided. Instead all values will be filled at once via the `Hidden` field.
+
+```php
+JSON::make('Address', 'address', [
+    Text::make('Street'),
+    Text::make('City'),
+])->fillAtOnce();
+```
+
+The `fillOnce()` method accepts a `Callback` which can be used to modify the data structure before it is added to the model.
+
+```php
+// given these fields:
+JSON::make('Address', 'address', [
+    Text::make('Street'),
+    Text::make('City'),
+])->fillAtOnce(function ($request, $requestValues, $model, $attribute, $requestAttribute) {
+    return ['nested' => $requestValues];
+});
+
+// and a request with ['address->street' => 'test str. 5', 'address->city' => 'test city']
+
+// we will get
+$requestValues = ['street' => 'test str. 5', 'city' => 'test city'];
+
+// which will be pased into the fillAtOnce callback leading to the following in our db:
+['address' => ['nested' => ['street' => 'test str. 5', 'city' => 'test city']]];
+```
+
 ## Use inside Panels
 In order to use JSON column inside Nova Panel you need to get 'data' property of the top level JSON field.
 
