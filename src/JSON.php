@@ -2,13 +2,13 @@
 
 namespace Naoray\NovaJson;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Resources\MergeValue;
+use Laravel\Nova\Makeable;
 use Illuminate\Support\Str;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\Hidden;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Resources\MergeValue;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Makeable;
 use Naoray\NovaJson\Exceptions\AttributeCast;
 
 class JSON extends MergeValue
@@ -66,17 +66,19 @@ class JSON extends MergeValue
 
         $this->data[] = Hidden::make($this->attribute)->fillUsing(function (NovaRequest $request, $model, $attribute, $requestAttribute) use ($fillOnceCallback) {
             $keys = collect($request->keys())
-                ->filter(fn ($key) => Str::startsWith($key, $this->attribute))
+                ->filter(fn ($key) => Str::startsWith($key, $this->attribute) && $key !== $this->attribute)
                 ->all();
 
             $requestValues = collect($request->only($keys))
                 ->mapWithKeys(function ($value, $key) use ($request, $model) {
-                    $value = $this->fetchValueFromRequest($request, $model, $key, $key);
-                    $key = Str::after($key, $this->attribute . '->');
-
-                    return [$key => $value];
+                    return [$key => $this->fetchValueFromRequest($request, $model, $key, $key)];
                 })
-                ->all();
+                ->reduceWithKeys(function ($carry, $item, $key) {
+                    $path = str_replace('->', '.', $key);
+                    data_set($carry, $path, $item);
+
+                    return $carry;
+                }, [])[$this->attribute];
 
             $model->{$attribute} = $fillOnceCallback
                 ? $fillOnceCallback($request, $requestValues, $model, $attribute, $requestAttribute)
@@ -151,7 +153,7 @@ class JSON extends MergeValue
                 return;
             }
 
-            if (! $model->hasCast($this->attribute)) {
+            if (!$model->hasCast($this->attribute)) {
                 throw AttributeCast::notFoundFor($this->attribute);
             }
 
