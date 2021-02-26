@@ -126,13 +126,13 @@ class JSON extends MergeValue
         $this->fillCallbacks[$field->attribute] = $field->fillCallback;
 
         return $field->fillUsing(function ($request, Model $model, $attribute, $requestAttribute) {
-            if (!$model->hasCast($this->attribute)) {
+            if (! $model->hasCast($this->attribute)) {
                 throw AttributeCast::notFoundFor($this->attribute);
             }
 
             $value = $this->fetchValueFromRequest($request, $model, $attribute, $requestAttribute);
 
-            if (!$this->nullable && $this->isNullValue($value)) {
+            if (! $this->nullable && $this->isNullValue($value)) {
                 return;
             }
 
@@ -329,7 +329,7 @@ class JSON extends MergeValue
      */
     public function __call($method, $attrs): self
     {
-        if (!method_exists(\Laravel\Nova\Fields\FieldElement::class, $method)) {
+        if (! method_exists(\Laravel\Nova\Fields\FieldElement::class, $method)) {
             throw new \BadMethodCallException;
         }
 
