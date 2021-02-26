@@ -86,6 +86,16 @@ $requestValues = ['street' => 'test str. 5', 'city' => 'test city'];
 ['address' => ['nested' => ['street' => 'test str. 5', 'city' => 'test city']]];
 ```
 
+## Nullable Fields
+As with other fields you can call `nullable()` and `nullValues()` on the JSON field directly to make all fields contained nullable and specify which values are treated as `null`
+
+```php
+JSON::make('Address', 'address', [
+    Text::make('Street'),
+    Text::make('City'),
+])->nullable()->nullValues(['_', 0])
+```
+
 ## Use inside Panels
 In order to use JSON column inside Nova Panel you need to get 'data' property of the top level JSON field.
 
