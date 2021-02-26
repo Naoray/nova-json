@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.2.2](https://github.com/naoray/nova-json/tree/v1.2.2) (2021-02-26)
+
+**Changed**
+- changed `prepareJsonFields()` from public to protected
+- added tests for `nullable()` & `nullValues()`
+
 ## [v1.2.1](https://github.com/naoray/nova-json/tree/v1.2.1) (2021-02-03)
 
 **Fixed**
