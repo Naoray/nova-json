@@ -2,6 +2,9 @@
 
 ## [v1.2.2](https://github.com/naoray/nova-json/tree/v1.2.2) (2021-02-26)
 
+**Fixed**
+- `nullable()` fields were not possible to be filled with `null` values
+
 **Changed**
 - changed `prepareJsonFields()` from public to protected
 - added tests for `nullable()` & `nullValues()`
