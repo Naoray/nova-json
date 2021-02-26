@@ -19,13 +19,19 @@ The above will be resolved into a single `author` attribute on the model.
 ['author' => ['name' => '', 'email' => '']]
 ```
 
-
 ## Install & setup
 `composer require naoray/nova-json`
 
 Add the column's name, you want to use in the `JSON` field, to your `$casts` array on the resource's model!
 
 ## Usage
+- [FillUsing callbacks](#fillusing-callbacks)
+- [Fill at once](#fill-at-once)
+- [Nullable Fields](#nullable-fields)
+- [Labels and Attributes](#labels-and-attributes)
+- [Nested Structures](#nested-structures)
+- [Use inside Panels](#use-inside-panels)
+
 You can destructure one JSON column into multiple Nova fields and apply unique rules to each of the key-value pairs.
 
 ```php
@@ -45,7 +51,7 @@ public function fields()
 }
 ```
 
-## FillUsing callbacks
+### FillUsing callbacks
 The `->fillUsing()` callbacks are normally used to fill the models attribute directly. With this package, it's not necessary to fill the model's attribute, but instead you should return the value you want to save on the model itself.
 
 ```php
@@ -56,7 +62,7 @@ JSON::make('Address', 'address', [
 
 The above example is rather silly than useful, but it demonstrates the concept. The _ Foo_ value will be apended to every `address->street` value within nova.
 
-## Fill at once
+### Fill at once
 When using [data transfer objects](https://github.com/spatie/data-transfer-object) (which works well with [castable dto's](https://github.com/jessarcher/laravel-castable-data-transfer-object)) you don't want each field to be filled seperately, because than the dto's validation is useless. With the `fillAtOnce()` method a `Hidden` field will be added and the filling of single fields will be avoided. Instead all values will be filled at once via the `Hidden` field.
 
 ```php
@@ -86,7 +92,7 @@ $requestValues = ['street' => 'test str. 5', 'city' => 'test city'];
 ['address' => ['nested' => ['street' => 'test str. 5', 'city' => 'test city']]];
 ```
 
-## Nullable Fields
+### Nullable Fields
 As with other fields you can call `nullable()` and `nullValues()` on the JSON field directly to make all fields contained nullable and specify which values are treated as `null`
 
 ```php
@@ -96,7 +102,24 @@ JSON::make('Address', 'address', [
 ])->nullable()->nullValues(['_', 0])
 ```
 
-## Use inside Panels
+### Labels and Attributes
+By default the first argument you provide the `JSON` field will be considered its `name`. If you don't provide a second string argument the `attribute` of the field will be guessed e.g. `'Some Json Column Name' => 'some_json_column_name'`. If you want your field `name` to be different from your `attribute` you can provide the field with a second argument and provide the fields as the third argument: `JSON::make('Some Name', 'column_name', [])`
+
+### Nested Structures
+The `JSON` field can also be nested by itself to display nested JSON structures:
+
+```php
+JSON::make('Meta', [
+    Text::make('Street'),
+
+    JSON::make('Location', [
+        Text::make('Latitude'),
+        Text::make('Longitude'),
+    ]),
+]);
+```
+
+### Use inside Panels
 In order to use JSON column inside Nova Panel you need to get 'data' property of the top level JSON field.
 
 #### Examples
@@ -120,23 +143,6 @@ new Panel('Brand Settings', [
         Color::make('Secondary Color')->swatches(),
     ])->data,
 ]),
-```
-
-### Labels & Attributes
-By default the first argument you provide the `JSON` field will be considered its `name`. If you don't provide a second string argument the `attribute` of the field will be guessed e.g. `'Some Json Column Name' => 'some_json_column_name'`. If you want your field `name` to be different from your `attribute` you can provide the field with a second argument and provide the fields as the third argument: `JSON::make('Some Name', 'column_name', [])`
-
-### Nested Structures
-The `JSON` field can also be nested by itself to display nested JSON structures:
-
-```php
-JSON::make('Meta', [
-    Text::make('Street'),
-
-    JSON::make('Location', [
-        Text::make('Latitude'),
-        Text::make('Longitude'),
-    ]),
-]);
 ```
 
 ## Testing
