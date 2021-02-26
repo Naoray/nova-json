@@ -147,6 +147,40 @@ class JSONTest extends TestCase
         collect($json->data)->last()->fillInto($request, $user, 'address');
         $this->assertEquals(['nested' => ['street' => 'some-val Foo', 'city' => 'other-val']], $user->address);
     }
+
+    /** @test */
+    public function it_allows_storing_nullable_values()
+    {
+        $user = new User(['address' => ['street' => 'test']]);
+        $json = JSON::make('Address', 'address', [
+            Text::make('Street'),
+            Text::make('City'),
+        ])->nullable();
+
+        $request = new NovaRequest(['address->street' => null, 'address->city' => null]);
+        $json->data[0]->fillInto($request, $user, 'address->street');
+        $this->assertNull($user->address['street']);
+
+        $json->data[1]->fillInto($request, $user, 'address->city');
+        $this->assertNull($user->address['city']);
+    }
+
+    /** @test */
+    public function it_allows_identifying_custom_nullable_values()
+    {
+        $user = new User(['address' => ['street' => 'test']]);
+        $json = JSON::make('Address', 'address', [
+            Text::make('Street'),
+            Text::make('City'),
+        ])->nullable(true, [0, '_']);
+
+        $request = new NovaRequest(['address->street' => 0, 'address->city' => '_']);
+        $json->data[0]->fillInto($request, $user, 'address->street');
+        $this->assertNull($user->address['street']);
+
+        $json->data[1]->fillInto($request, $user, 'address->city');
+        $this->assertNull($user->address['city']);
+    }
 }
 
 class User extends Authenticatable
