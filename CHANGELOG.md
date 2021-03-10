@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.2.3](https://github.com/naoray/nova-json/tree/v1.2.2) (2021-03-10)
+
+**Fixed**
+- `array_key_exists(): The first argument should be either a string or an integer` appearing when the attribute name of the JSON fields were not specified
+
 ## [v1.2.2](https://github.com/naoray/nova-json/tree/v1.2.2) (2021-02-26)
 
 **Fixed**
