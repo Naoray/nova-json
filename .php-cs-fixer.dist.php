@@ -125,16 +125,12 @@ $rules = [
 
 $project_path = getcwd();
 $finder = Finder::create()
+    ->notPath('vendor')
     ->in([
-        $project_path . '/app',
-        $project_path . '/config',
-        $project_path . '/database',
-        $project_path . '/resources',
-        $project_path . '/routes',
-        $project_path . '/tests',
+        __DIR__ . '/src',
+        __DIR__ . '/tests',
     ])
     ->name('*.php')
-    ->notName('*.blade.php')
     ->ignoreDotFiles(true)
     ->ignoreVCS(true);
 
