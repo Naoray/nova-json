@@ -291,7 +291,7 @@ class JSON extends MergeValue
                 ? $fillAtOnceCallback($request, $requestValues, $model, $attribute, $requestAttribute)
                 : $requestValues;
 
-            if ($this->nullable && $this->isNullValue($value)) {
+            if (!$this->nullable && $this->isNullValue($value)) {
                 return;
             }
 
@@ -323,7 +323,7 @@ class JSON extends MergeValue
                 data_set($carry, $path, $item);
 
                 return $carry;
-            }, [])[$this->attribute];
+            }, [$this->attribute => []])[$this->attribute];
     }
 
     /**

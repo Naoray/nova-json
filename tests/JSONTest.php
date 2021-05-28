@@ -149,6 +149,21 @@ class JSONTest extends TestCase
     }
 
     /** @test */
+    public function it_does_not_store_values_for_fill_once_if_fields_are_not_nullable_and_nothing_is_returned_from_callback()
+    {
+        $user = new User(['address' => ['street' => '', 'city' => '']]);
+        $json = JSON::make('Address', 'address', [
+            Text::make('Street'),
+            Text::make('City'),
+        ])->nullable(false)->fillAtOnce(fn ($request, $requestValues) => null);
+
+        $request = new NovaRequest(['address->street' => 'some-val', 'address->city' => 'other-val', 'nonjson' => 'foo']);
+
+        collect($json->data)->last()->fillInto($request, $user, 'address');
+        $this->assertEquals(['street' => '', 'city' => ''], $user->address);
+    }
+
+    /** @test */
     public function it_allows_storing_nullable_values()
     {
         $user = new User(['address' => ['street' => 'test']]);
