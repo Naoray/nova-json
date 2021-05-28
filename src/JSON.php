@@ -131,13 +131,13 @@ class JSON extends MergeValue
                 return;
             }
 
-            if (!$model->hasCast($this->attribute)) {
+            if (! $model->hasCast($this->attribute)) {
                 throw AttributeCast::notFoundFor($this->attribute);
             }
 
             $value = $this->fetchValueFromRequest($request, $model, $attribute, $requestAttribute);
 
-            if (!$this->nullable && $this->isNullValue($value)) {
+            if (! $this->nullable && $this->isNullValue($value)) {
                 return;
             }
 
@@ -217,7 +217,7 @@ class JSON extends MergeValue
     {
         return is_callable($this->nullValues)
             ? ($this->nullValues)($value)
-            : in_array($value, (array)$this->nullValues);
+            : in_array($value, (array) $this->nullValues);
     }
 
     /**
@@ -259,7 +259,7 @@ class JSON extends MergeValue
      */
     protected function getOldValue(Model $model)
     {
-        return $this->value ?? (array)$model->{$this->attribute};
+        return $this->value ?? (array) $model->{$this->attribute};
     }
 
     /**
@@ -291,7 +291,7 @@ class JSON extends MergeValue
                 ? $fillAtOnceCallback($request, $requestValues, $model, $attribute, $requestAttribute)
                 : $requestValues;
 
-            if (!$this->nullable && $this->isNullValue($value)) {
+            if (! $this->nullable && $this->isNullValue($value)) {
                 return;
             }
 
@@ -336,7 +336,7 @@ class JSON extends MergeValue
      */
     public function __call($method, $attrs): self
     {
-        if (!method_exists(\Laravel\Nova\Fields\Field::class, $method)) {
+        if (! method_exists(\Laravel\Nova\Fields\Field::class, $method)) {
             throw new \BadMethodCallException;
         }
 

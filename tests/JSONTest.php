@@ -87,7 +87,7 @@ class JSONTest extends TestCase
     {
         $user = new User(['address' => ['street' => '']]);
         $json = JSON::make('Address', 'address', [
-            Text::make('Street')->fillUsing(fn ($request, $model, $attribute, $requestAttribute) => $request[$requestAttribute] . ' Foo'),
+            Text::make('Street')->fillUsing(fn ($request, $model, $attribute, $requestAttribute) => $request[$requestAttribute].' Foo'),
         ]);
 
         $request = new NovaRequest(['address->street' => 'some-val']);
@@ -136,7 +136,7 @@ class JSONTest extends TestCase
     {
         $user = new User(['address' => ['street' => '', 'city' => '']]);
         $json = JSON::make('Address', 'address', [
-            Text::make('Street')->fillUsing(fn ($request, $model, $attribute, $requestAttribute) => $request[$requestAttribute] . ' Foo'),
+            Text::make('Street')->fillUsing(fn ($request, $model, $attribute, $requestAttribute) => $request[$requestAttribute].' Foo'),
             Text::make('City'),
         ])->fillAtOnce(function ($request, $requestValues, $model, $attribute, $requestAttribute) {
             return ['nested' => $requestValues];
