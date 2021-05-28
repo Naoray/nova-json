@@ -63,7 +63,7 @@ class JSON extends MergeValue
      * Create a JSON field collection instance.
      *
      * @param string $name
-     * @param string|callback|\Illuminate\Support\Collection|array $attribute
+     * @param string|callable|\Illuminate\Support\Collection|array $attribute
      * @param mixed $fields
      */
     public function __construct(string $name, $attribute, $fields = [])
@@ -127,6 +127,10 @@ class JSON extends MergeValue
         $this->fillCallbacks[$field->attribute] = $field->fillCallback;
 
         return $field->fillUsing(function ($request, Model $model, $attribute, $requestAttribute) {
+            if ($this->fillAtOnce) {
+                return;
+            }
+
             if (!$model->hasCast($this->attribute)) {
                 throw AttributeCast::notFoundFor($this->attribute);
             }
@@ -134,10 +138,6 @@ class JSON extends MergeValue
             $value = $this->fetchValueFromRequest($request, $model, $attribute, $requestAttribute);
 
             if (!$this->nullable && $this->isNullValue($value)) {
-                return;
-            }
-
-            if ($this->fillAtOnce) {
                 return;
             }
 
@@ -287,9 +287,15 @@ class JSON extends MergeValue
         $this->data[] = Hidden::make($this->attribute)->fillUsing(function (NovaRequest $request, $model, $attribute, $requestAttribute) use ($fillAtOnceCallback) {
             $requestValues = $this->getRequestValues($request, $model);
 
-            $model->{$attribute} = $fillAtOnceCallback
+            $value = $fillAtOnceCallback
                 ? $fillAtOnceCallback($request, $requestValues, $model, $attribute, $requestAttribute)
                 : $requestValues;
+
+            if ($this->nullable && $this->isNullValue($value)) {
+                return;
+            }
+
+            $model->{$attribute} = $value;
         });
 
         return $this;
@@ -330,7 +336,7 @@ class JSON extends MergeValue
      */
     public function __call($method, $attrs): self
     {
-        if (!method_exists(\Laravel\Nova\Fields\FieldElement::class, $method)) {
+        if (!method_exists(\Laravel\Nova\Fields\Field::class, $method)) {
             throw new \BadMethodCallException;
         }
 
