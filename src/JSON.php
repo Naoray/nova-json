@@ -318,7 +318,7 @@ class JSON extends MergeValue
             ->mapWithKeys(function ($value, $key) use ($request, $model) {
                 return [$key => $this->fetchValueFromRequest($request, $model, $key, $key)];
             })
-            ->reduceWithKeys(function ($carry, $item, $key) {
+            ->reduce(function ($carry, $item, $key) {
                 $path = str_replace('->', '.', $key);
                 data_set($carry, $path, $item);
 
