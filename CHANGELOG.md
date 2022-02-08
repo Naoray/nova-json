@@ -1,5 +1,15 @@
 # Changelog
 
+## [v2.0.0](https://github.com/naoray/nova-json/tree/v2.0.0) (2022-02-08)
+
+**Added**
+- support for Laravel 9 (827c15f25daf230a242af3a51093a17219cb1e7e)
+
+## [v1.3.1](https://github.com/naoray/nova-json/tree/v1.3.1) (2021-03-28)
+
+**Changed**
+- if `fillAtOnce()` returns `null` and the `JSON` field is not nullable, the package won't attempt to fill a model attribute => this allows the usage of a JSON field for related fields and give full control over resolving the values
+
 ## [v1.2.3](https://github.com/naoray/nova-json/tree/v1.2.2) (2021-03-10)
 
 **Fixed**
