@@ -2,7 +2,7 @@
 
 Contributions are **welcome** and will be fully **credited**.
 
-We accept contributions via Pull Requests on [Github](https://github.com/naoray/nova-json).
+We accept contributions via Pull Requests on [Github](https://github.com/stepanenko3/nova-json).
 
 
 ## Pull Requests

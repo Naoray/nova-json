@@ -1,7 +1,7 @@
 # nova-json
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-[![Total Downloads](https://img.shields.io/packagist/dt/naoray/nova-json.svg?style=flat-square)](https://packagist.org/packages/naoray/nova-json)
-![Tests](https://github.com/naoray/nova-json/workflows/run-tests/badge.svg?branch=main)
+[![Total Downloads](https://img.shields.io/packagist/dt/stepanenko3/nova-json.svg?style=flat-square)](https://packagist.org/packages/stepanenko3/nova-json)
+![Tests](https://github.com/stepanenko3/nova-json/workflows/run-tests/badge.svg?branch=main)
 
 The `JSON` field wrapper allows you to specify multiple fields which will be resolved into a single model attribute. This allows you to validate every information you store inside a json column seperately.
 
@@ -20,22 +20,32 @@ The above will be resolved into a single `author` attribute on the model.
 ```
 
 ## Install & setup
-`composer require naoray/nova-json`
+`composer require stepanenko3/nova-json`
 
 Add the column's name, you want to use in the `JSON` field, to your `$casts` array on the resource's model!
 
 ## Usage
-- [FillUsing callbacks](#fillusing-callbacks)
-- [Fill at once](#fill-at-once)
-- [Nullable Fields](#nullable-fields)
-- [Labels and Attributes](#labels-and-attributes)
-- [Nested Structures](#nested-structures)
-- [Use inside Panels](#use-inside-panels)
+- [nova-json](#nova-json)
+  - [Install & setup](#install--setup)
+  - [Usage](#usage)
+    - [FillUsing callbacks](#fillusing-callbacks)
+    - [Fill at once](#fill-at-once)
+    - [Nullable Fields](#nullable-fields)
+    - [Labels and Attributes](#labels-and-attributes)
+    - [Nested Structures](#nested-structures)
+    - [Use inside Panels](#use-inside-panels)
+      - [Examples](#examples)
+  - [Testing](#testing)
+  - [Changelog](#changelog)
+  - [Contributing](#contributing)
+  - [Credits](#credits)
+  - [Security](#security)
+  - [License](#license)
 
 You can destructure one JSON column into multiple Nova fields and apply unique rules to each of the key-value pairs.
 
 ```php
-use Naoray\NovaJson\JSON;
+use Stepanenko3\NovaJson\JSON;
 
 // within your nova resource
 public function fields()
@@ -130,18 +140,18 @@ new Panel('Brand Settings',
         Image::make('Logo')->disk('public'),
         Color::make('Primary Color')->swatches(),
         Color::make('Secondary Color')->swatches(),
-    ])->data,
+    ])-,
 ),
 ```
 2. if you need other fields inside the Panel you can use splat operator like this:
 ```php
 new Panel('Brand Settings', [
     Text::make('Some Field'),
-    ...JSON::make('brand_settings', [
+    JSON::make('brand_settings', [
         Image::make('Logo')->disk('public'),
         Color::make('Primary Color')->swatches(),
         Color::make('Secondary Color')->swatches(),
-    ])->data,
+    ]),
 ]),
 ```
 
@@ -160,8 +170,9 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Credits
 
+- [Artem Stepanenko](https://github.com/stepanenko3)
 - [Krishan Koenig](https://github.com/naoray)
-- [All Contributors](https://github.com/naoray/nova-json/contributors)
+- [All Contributors](https://github.com/stepanenko3/nova-json/contributors)
 
 ## Security
 If you discover any security-related issues, please email krishan.koenig@googlemail.com instead of using the issue tracker.

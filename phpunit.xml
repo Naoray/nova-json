@@ -4,7 +4,7 @@
          colors="true"
 >
     <testsuites>
-        <testsuite name="naoray/nova-json Test Suite">
+        <testsuite name="stepanenko3/nova-json Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

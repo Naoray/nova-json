@@ -3,12 +3,15 @@
   "description": "Nova json field to spread a json column throughout multiple fields.",
   "type": "package",
   "license": "MIT",
-  "version": "2.0.1",
   "keywords": [
     "laravel",
     "nova"
   ],
   "authors": [
+    {
+      "name": "Artem Stepanenko",
+      "email": "stpnnk.artem@gmail.com"
+    },
     {
       "name": "Krishan Koenig",
       "email": "krishan.koenig@googlemail.com"
