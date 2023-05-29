@@ -21,7 +21,7 @@ jobs:
                         testbench: 8.*
                         php: 8.2
 
-        name: P${{ matrix.php }} - L${{ matrix.laravel }} - T{{ matrix.testbench }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
+        name: P${{ matrix.php }} - L${{ matrix.laravel }} - T${{ matrix.testbench }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
 
         steps:
             -   name: Checkout code
