@@ -63,7 +63,7 @@ class JSON extends MergeValue
      * Create a JSON field collection instance.
      *
      * @param string $name
-     * @param string|callable|\Illuminate\Support\Collection|array $attribute
+     * @param string|callable|Collection|array $attribute
      * @param mixed $fields
      */
     public function __construct(string $name, $attribute, $fields = [])
@@ -336,7 +336,7 @@ class JSON extends MergeValue
      */
     public function __call($method, $attrs): self
     {
-        if (! method_exists(\Laravel\Nova\Fields\Field::class, $method)) {
+        if (! method_exists(Field::class, $method)) {
             throw new \BadMethodCallException;
         }
 
