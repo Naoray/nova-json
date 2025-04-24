@@ -270,7 +270,7 @@ class JSON extends MergeValue
      */
     protected function getDottedAttributeKey(string $attribute): string
     {
-        return str_replace(["{$this->attribute}->", '->'], ['', '.'], $attribute);
+        return \str_replace('->', '.', Str::after($attribute, "{$this->attribute}->"));
     }
 
     /**
